@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Routes - FarFlight</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #d0d2d6;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: auto;
+        }
+        header {
+            background-color: #0f172a;
+            color: #e0e7ff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        header h1 {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+        .routes-container {
+            background-color: #252739;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .routes-container h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #60a5fa;
+            text-align: center;
+        }
+        .route-list {
+            margin-bottom: 20px;
+        }
+        .route-item {
+            background-color: #2d3047;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .route-item p {
+            margin: 5px 0;
+        }
+        .form-actions {
+            text-align: center;
+        }
+        .form-actions button {
+            padding: 12px 24px;
+            background-color: #1e90ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+        .form-actions button:hover {
+            background-color: #1c7ed6;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .error {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .success {
+            color: #4ade80;
+            font-size: 0.9em;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .upload-form {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .upload-form input[type="file"] {
+            padding: 10px;
+            font-size: 1em;
+            color: #d0d2d6;
+        }
+        .upload-form button {
+            padding: 12px 24px;
+            background-color: #1e90ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .upload-form button:hover {
+            background-color: #1c7ed6;
+        }
+        .export-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #28a745;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+        .export-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='FarFlight.png') }}" alt="FarFlight Logo">
+            <h1>Far Flight</h1>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </header>
+    <div class="routes-container">
+        <h2>Saved Routes</h2>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if success %}
+            <p class="success">{{ success }}</p>
+        {% endif %}
+        {% if routes %}
+            <div class="route-list">
+                {% for route in routes %}
+                    <div class="route-item">
+                        <p><strong>Tail Number:</strong> {{ route.tail_number }}</p>
+                        <p><strong>Departure:</strong> {{ route.departure }}</p>
+                        <p><strong>Waypoints:</strong> {{ route.waypoints or 'None' }}</p>
+                        <p><strong>Arrival:</strong> {{ route.arrival }}</p>
+                        <p><strong>Time Departing:</strong> {{ route.time_departing or 'N/A' }}</p>
+                        <p><strong>Saved:</strong> {{ route.timestamp }}</p>
+                        <form method="POST" style="display: inline;">
+                            <input type="hidden" name="route" value="{{ loop.index0 }}">
+                            <button type="submit" class="form-actions">View Route</button>
+                        </form>
+                        <form method="POST" style="display: inline;">
+                            <input type="hidden" name="delete" value="{{ loop.index0 }}">
+                            <button type="submit" class="form-actions delete-btn">Delete</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="form-actions">
+                <a href="{{ url_for('export_routes') }}" class="export-btn">Export Routes to CSV</a>
+            </div>
+        {% else %}
+            <p class="error">No saved routes found.</p>
+        {% endif %}
+        <div class="upload-form">
+            <form method="POST" enctype="multipart/form-data">
+                <input type="file" name="upload" required>
+                <button type="submit">Upload Routes CSV</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

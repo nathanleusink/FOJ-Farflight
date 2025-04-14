@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Far Flight</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #d0d2d6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        header {
+            background-color: #0f172a;
+            color: #e0e7ff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        header h1 {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+        .header-right {
+            display: flex;
+            gap: 15px;
+        }
+        .header-right a {
+            background-color: #1e90ff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .header-right a:hover {
+            background-color: #1c7ed6;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #b02a37;
+        }
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 280px;
+            background-color: #252739;
+            padding: 15px;
+            border-right: 1px solid #3b3f5c;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar img {
+            height: 30px;
+            display: block;
+            margin: 0 auto 10px;
+        }
+        .sidebar h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #60a5fa;
+            text-align: center;
+        }
+        .tail-numbers-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .tail-number {
+            padding: 8px;
+            border: 1px solid #3b3f5c;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            background-color: #2d3047;
+            color: #d0d2d6;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tail-number.selected {
+            background-color: #60a5fa;
+            color: #ffffff;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        .form-container {
+            background-color: #252739;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            height: 180px;
+        }
+        .inputs-row {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .form-group label {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            color: #a3a8c3;
+        }
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #3b3f5c;
+            border-radius: 4px;
+            font-size: 1em;
+            width: 100%;
+            background-color: #2d3047;
+            color: #d0d2d6;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            border-color: #60a5fa;
+            outline: none;
+        }
+        .form-actions {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .form-actions button {
+            padding: 10px 20px;
+            background-color: #1e90ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            width: 25%;
+        }
+        .form-actions button:hover {
+            background-color: #1c7ed6;
+        }
+        .error {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .route-display {
+            background-color: #2d3047;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .route-display span {
+            color: #60a5fa;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        .route-display form {
+            display: inline;
+        }
+        .route-display button {
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .route-display button:hover {
+            background-color: #b02a37;
+        }
+        #map {
+            width: 100%;
+            height: calc(100vh - 260px); /* Adjusted for route-display */
+            border-radius: 8px;
+            border: 1px solid #3b3f5c;
+            background-color: #1e1e2f;
+            overflow: hidden;
+        }
+        #map iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            max-height: 100%;
+            max-width: 100%;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: 150px;
+                border-right: none;
+                border-bottom: 1px solid #3b3f5c;
+            }
+            .inputs-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .form-container {
+                height: auto;
+            }
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .form-actions button {
+                width: 50%;
+            }
+            .route-display {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            #map {
+                height: calc(100vh - 360px); /* Adjusted for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='FarFlight.png') }}" alt="FarFlight Logo">
+            <h1>Far Flight</h1>
+        </div>
+        <div class="header-right">
+            <a href="{{ url_for('routes') }}">Saved Routes</a>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </header>
+    <div class="main-content">
+        <div class="sidebar">
+            <img src="{{ url_for('static', filename='FarFlight.png') }}" alt="FarFlight Logo">
+            <h2>Tail Numbers</h2>
+            <div class="tail-numbers-list">
+                {% for tail_number in tail_numbers %}
+                    <div class="tail-number" onclick="selectTailNumber(this, '{{ tail_number }}')">{{ tail_number }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="content">
+            <div class="form-container">
+                <form method="POST" id="routeForm">
+                    <input type="hidden" name="tail_number" id="tail_number">
+                    <div class="inputs-row">
+                        <div class="form-group">
+                            <label for="dest_airport">Departure Airport (IATA)</label>
+                            <input type="text" id="dest_airport" name="dest_airport" placeholder="e.g., JFK">
+                        </div>
+                        <div class="form-group">
+                            <label for="waypoints">Waypoints (IATA, comma-separated)</label>
+                            <input type="text" id="waypoints" name="waypoints" placeholder="e.g., ORD, DEN">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_airport">Arrival Airport (IATA)</label>
+                            <input type="text" id="arrival_airport" name="arrival_airport" placeholder="e.g., LAX">
+                        </div>
+                        <div class="form-group">
+                            <label for="time_departing">Time Departing</label>
+                            <input type="text" id="time_departing" name="time_departing" placeholder="e.g., 14:30">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" name="action" value="find">Find Route</button>
+                        <button type="submit" name="action" value="save">Save Route</button>
+                    </div>
+                    {% if error %}
+                        <p class="error">{{ error }}</p>
+                    {% endif %}
+                </form>
+            </div>
+            {% if route_display %}
+                <div class="route-display">
+                    <span>Route: {{ route_display }}</span>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="clear">
+                        <button type="submit">X</button>
+                    </form>
+                </div>
+            {% endif %}
+            <div id="map">
+                {{ map_html | safe }}
+            </div>
+        </div>
+    </div>
+    <script>
+        function selectTailNumber(element, tailNumber) {
+            // Deselect all tail numbers
+            document.querySelectorAll('.tail-number').forEach(el => el.classList.remove('selected'));
+            // Select the clicked one
+            element.classList.add('selected');
+            // Update hidden input with selected tail number
+            document.getElementById('tail_number').value = tailNumber;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+username,tail_number,departure,waypoints,arrival,time_departing,timestamp
+admin,10001,KADW,PHNL,ZMCK,1100,2025-04-11T12:36:14.627785
+admin,10001,KADW,PHNL,ZMCK,,2025-04-11T14:10:51.307125

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Account - FarFlight</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #d0d2d6;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: auto;
+        }
+        header {
+            background-color: #0f172a;
+            color: #e0e7ff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-left img {
+            height: 36px;
+            margin-right: 12px;
+        }
+        header h1 {
+            font-size: 1.4em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .nav-btn {
+            color: #e0e7ff;
+            text-decoration: none;
+            font-size: 0.95em;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .nav-btn:hover {
+            background-color: #334155;
+            color: #ffffff;
+        }
+        .user-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .user-icon, .user-icon img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #2d3748;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            color: #e0e7ff;
+            margin-right: 8px;
+            text-transform: uppercase;
+            border: 1px solid #3b3f5c;
+            object-fit: cover;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .username {
+            font-size: 0.95em;
+            color: #e0e7ff;
+        }
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: #252739;
+            border: 1px solid #3b3f5c;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            min-width: 160px;
+            z-index: 1000;
+        }
+        .dropdown.active {
+            display: block;
+        }
+        .dropdown a {
+            display: block;
+            padding: 10px 16px;
+            color: #d0d2d6;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.2s;
+        }
+        .dropdown a:hover {
+            background-color: #1e90ff;
+            color: #ffffff;
+        }
+        .account-container {
+            background-color: #252739;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .account-container h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            background-color: #2d3047;
+        }
+        .default-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #2d3047;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-size: 0.9em;
+            color: #a3a8c3;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #3b3f5c;
+            border-radius: 4px;
+            font-size: 1em;
+            background-color: #2d3047;
+            color: #d0d2d6;
+        }
+        .form-group input:focus {
+            border-color: #60a5fa;
+            outline: none;
+        }
+        .form-actions button {
+            padding: 12px 24px;
+            background-color: #1e90ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .form-actions button:hover {
+            background-color: #1c7ed6;
+        }
+        .error {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .success {
+            color: #4ade80;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userIcon = document.querySelector('.user-icon');
+            const dropdown = document.querySelector('.dropdown');
+            if (userIcon && dropdown) {
+                userIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('active');
+                    console.log('User icon clicked, dropdown toggled');
+                });
+                document.addEventListener('click', function(e) {
+                    if (!userIcon.contains(e.target) && !dropdown.contains(e.target)) {
+                        dropdown.classList.remove('active');
+                        console.log('Clicked outside, dropdown closed');
+                    }
+                });
+            } else {
+                console.error('User icon or dropdown not found');
+            }
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='FarFlight.png') }}" alt="FarFlight Logo">
+            <h1>Far Flight</h1>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-btn">Home</a>
+            <a href="{{ url_for('routes') }}" class="nav-btn">Routes</a>
+            <div class="user-menu">
+                {% if user.profile_picture %}
+                    <img src="{{ url_for('uploaded_file', filename=user.profile_picture) }}" alt="Profile Picture" class="user-icon">
+                {% else %}
+                    <div class="user-icon">{{ username[0] | upper }}</div>
+                {% endif %}
+                <span class="username">{{ username }}</span>
+                <div class="dropdown">
+                    <a href="{{ url_for('account') }}">View Account</a>
+                    <a href="{{ url_for('edit_account') }}">Edit Account</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="account-container">
+        <h2>Edit Account</h2>
+        {% if user.profile_picture %}
+            <img src="{{ url_for('uploaded_file', filename=user.profile_picture) }}" alt="Profile Picture" class="profile-picture">
+        {% else %}
+            <div class="default-picture">No Picture</div>
+        {% endif %}
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if success %}
+            <p class="success">{{ success }}</p>
+        {% endif %}
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="profile_picture">Upload Profile Picture</label>
+                <input type="file" id="profile_picture" name="profile_picture">
+            </div>
+            <div class="form-actions">
+                <button type="submit">Update Profile</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

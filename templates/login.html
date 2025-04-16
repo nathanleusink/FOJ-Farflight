@@ -12,63 +12,71 @@
         }
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #1e1e2f;
             color: #d0d2d6;
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden;
-            /* Background image */
-            background-image: url('{{ url_for('static', filename='Bermuda-Airport.png') }}');
+            justify-content: center;
+            align-items: center;
+            background-image: url('{{ url_for('static', filename='background.jpg') }}');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             background-repeat: no-repeat;
-            position: relative;
         }
-        /* Overlay to ensure readability */
         body::before {
             content: '';
-            position: absolute;
-            top: 'nda;
+            position: fixed;
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(30, 30, 47, 0.85); /* Semi-transparent dark overlay */
-            z-index: 0;
+            background: rgba(30, 30, 47, 0.7); /* Semi-transparent overlay */
+            z-index: -1;
         }
         header {
             background-color: #0f172a;
             color: #e0e7ff;
-            padding: 15px 20px;
+            padding: 10px 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
-            z-index: 1;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
         }
         .header-left {
             display: flex;
             align-items: center;
         }
         .header-left img {
-            height: 40px;
-            margin-right: 10px;
+            height: 36px;
+            margin-right: 12px;
         }
         header h1 {
-            font-size: 1.5em;
-            font-weight: 600;
+            font-size: 1.4em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
-        .logout-btn {
-            background-color: #dc3545;
-            color: #ffffff;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .nav-btn {
+            color: #e0e7ff;
             text-decoration: none;
-            font-size: 0.9em;
-            transition: background-color 0.3s;
-            opacity: 0.5;
-            pointer-events: none;
+            font-size: 0.95em;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .nav-btn:hover {
+            background-color: #334155;
+            color: #ffffff;
         }
         .login-container {
             background-color: #252739;
@@ -77,29 +85,23 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             width: 100%;
             max-width: 400px;
-            margin: auto;
-            position: relative;
+            text-align: center;
+            margin-top: 80px;
             z-index: 1;
-        }
-        .login-container img {
-            height: 50px;
-            display: block;
-            margin: 0 auto 20px;
         }
         .login-container h2 {
             font-size: 1.8em;
             margin-bottom: 20px;
             color: #60a5fa;
-            text-align: center;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .form-group label {
             font-size: 0.9em;
-            margin-bottom: 5px;
             color: #a3a8c3;
             display: block;
+            margin-bottom: 5px;
         }
         .form-group input {
             width: 100%;
@@ -109,28 +111,21 @@
             font-size: 1em;
             background-color: #2d3047;
             color: #d0d2d6;
-            transition: border-color 0.3s;
         }
         .form-group input:focus {
             border-color: #60a5fa;
             outline: none;
         }
-        .form-group input::placeholder {
-            color: #6b7280;
-        }
-        .form-actions {
-            text-align: center;
-        }
         .form-actions button {
-            padding: 12px 24px;
+            padding: 12px;
             background-color: #1e90ff;
             color: #ffffff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 1em;
-            transition: background-color 0.3s;
             width: 100%;
+            transition: background-color 0.3s;
         }
         .form-actions button:hover {
             background-color: #1c7ed6;
@@ -138,25 +133,20 @@
         .error {
             color: #ff6b6b;
             font-size: 0.9em;
-            margin-top: 10px;
-            text-align: center;
+            margin-bottom: 10px;
         }
         .success {
             color: #4ade80;
             font-size: 0.9em;
-            margin-top: 10px;
-            text-align: center;
+            margin-bottom: 10px;
         }
-        .request-account {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .request-account a {
-            color: #60a5fa;
+        .register-link {
+            margin-top: 15px;
+            color: #1e90ff;
             text-decoration: none;
             font-size: 0.9em;
         }
-        .request-account a:hover {
+        .register-link:hover {
             text-decoration: underline;
         }
     </style>
@@ -167,32 +157,32 @@
             <img src="{{ url_for('static', filename='FarFlight.png') }}" alt="FarFlight Logo">
             <h1>Far Flight</h1>
         </div>
+        <div class="nav-links">
+            <!-- No user menu or nav links for login page -->
+        </div>
     </header>
     <div class="login-container">
-        <img src="{{ url_for('static', filename='FarFlight.png') }}" alt="FarFlight Logo">
         <h2>Login</h2>
-        <form method="POST" action="{{ url_for('login') }}">
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if success %}
+            <p class="success">{{ success }}</p>
+        {% endif %}
+        <form method="POST">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Enter username" required>
+                <input type="text" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter password" required>
+                <input type="password" id="password" name="password" required>
             </div>
             <div class="form-actions">
                 <button type="submit">Login</button>
             </div>
-            {% if error %}
-                <p class="error">{{ error }}</p>
-            {% endif %}
-            {% if success %}
-                <p class="success">{{ success }}</p>
-            {% endif %}
         </form>
-        <div class="request-account">
-            <p>Don't have an account? <a href="{{ url_for('request_account') }}">Request one here</a></p>
-        </div>
+        <a href="{{ url_for('request_account') }}" class="register-link">Don't have an account? Register</a>
     </div>
 </body>
 </html>

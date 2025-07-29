@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight Planner - FarFlight</title>
+    <title>Far Flight</title>
     <style>
         * {
             margin: 0;
@@ -14,9 +14,9 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             background-color: #1e1e2f;
             color: #d0d2d6;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            height: 100vh;
             overflow: hidden;
         }
         header {
@@ -27,140 +27,144 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
+            height: 60px;
         }
         .header-left {
             display: flex;
             align-items: center;
         }
         .header-left img {
-            height: 36px;
-            margin-right: 12px;
+            height: 40px;
+            margin-right: 10px;
         }
         header h1 {
-            font-size: 1.4em;
-            font-weight: 500;
-            letter-spacing: 0.5px;
+            font-size: 1.5em;
+            font-weight: 600;
         }
-        .nav-links {
+        .header-right {
             display: flex;
-            align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
-        .nav-btn {
-            color: #e0e7ff;
-            text-decoration: none;
-            font-size: 0.95em;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background-color 0.2s, color 0.2s;
-        }
-        .nav-btn:hover {
-            background-color: #334155;
-            color: #ffffff;
-        }
-        .user-menu {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .user-icon, .user-icon img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: #2d3748;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9em;
-            color: #e0e7ff;
-            margin-right: 8px;
-            text-transform: uppercase;
-            border: 1px solid #3b3f5c;
-            object-fit: cover;
-            cursor: pointer;
-            pointer-events: auto;
-        }
-        .username {
-            font-size: 0.95em;
-            color: #e0e7ff;
-        }
-        .dropdown {
-            display: none;
-            position: absolute;
-            top: 40px;
-            right: 0;
-            background-color: #252739;
-            border: 1px solid #3b3f5c;
-            border-radius: 4px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            min-width: 160px;
-            z-index: 1000;
-        }
-        .dropdown.active {
-            display: block;
-        }
-        .dropdown a {
-            display: block;
-            padding: 10px 16px;
-            color: #d0d2d6;
-            text-decoration: none;
-            font-size: 0.9em;
-            transition: background-color 0.2s;
-        }
-        .dropdown a:hover {
+        .header-right a {
             background-color: #1e90ff;
             color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
         }
-        .container {
+        .header-right a:hover {
+            background-color: #1c7ed6;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #b02a37;
+        }
+        .main-content {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
         .sidebar {
+            width: 280px;
             background-color: #252739;
-            padding: 20px;
-            width: 300px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-            overflow-y: auto;
+            padding: 15px;
+            border-right: 1px solid #3b3f5c;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar img {
+            height: 30px;
+            display: block;
+            margin: 0 auto 10px;
         }
         .sidebar h2 {
-            font-size: 1.5em;
+            font-size: 1.2em;
+            margin-bottom: 10px;
             color: #60a5fa;
-            margin-bottom: 20px;
+            text-align: center;
+        }
+        .tail-numbers-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .tail-number {
+            padding: 8px;
+            border: 1px solid #3b3f5c;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            background-color: #2d3047;
+            color: #d0d2d6;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tail-number.selected {
+            background-color: #60a5fa;
+            color: #ffffff;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        .form-container {
+            background-color: #252739;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            height: 180px;
+        }
+        .inputs-row {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            margin-bottom: 15px;
         }
         .form-group {
-            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
         .form-group label {
             font-size: 0.9em;
-            color: #a3a8c3;
-            display: block;
             margin-bottom: 5px;
+            color: #a3a8c3;
         }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
+        .form-group input {
+            padding: 8px;
             border: 1px solid #3b3f5c;
             border-radius: 4px;
             font-size: 1em;
+            width: 100%;
             background-color: #2d3047;
             color: #d0d2d6;
+            transition: border-color 0.3s;
         }
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus {
             border-color: #60a5fa;
             outline: none;
         }
-        .form-group input::placeholder {
-            color: #6b7280;
-        }
         .form-actions {
+            text-align: center;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            justify-content: center;
+            gap: 15px;
         }
         .form-actions button {
-            padding: 12px;
+            padding: 10px 20px;
             background-color: #1e90ff;
             color: #ffffff;
             border: none;
@@ -168,59 +172,97 @@
             cursor: pointer;
             font-size: 1em;
             transition: background-color 0.3s;
+            width: 25%;
         }
         .form-actions button:hover {
             background-color: #1c7ed6;
         }
-        .form-actions button.clear {
-            background-color: #dc3545;
-        }
-        .form-actions button.clear:hover {
-            background-color: #c82333;
-        }
-        .map-container {
-            flex: 1;
-            position: relative;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
         .error {
             color: #ff6b6b;
             font-size: 0.9em;
-            margin-top: 10px;
             text-align: center;
+            margin-top: 10px;
         }
         .route-display {
-            color: #4ade80;
+            background-color: #2d3047;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .route-display span {
+            color: #60a5fa;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        .route-display form {
+            display: inline;
+        }
+        .route-display button {
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
             font-size: 0.9em;
-            margin-top: 10px;
-            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .route-display button:hover {
+            background-color: #b02a37;
+        }
+        #map {
+            width: 100%;
+            height: calc(100vh - 260px);
+            border-radius: 8px;
+            border: 1px solid #3b3f5c;
+            background-color: #1e1e2f;
+            overflow: hidden;
+        }
+        #map iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            max-height: 100%;
+            max-width: 100%;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: 150px;
+                border-right: none;
+                border-bottom: 1px solid #3b3f5c;
+            }
+            .inputs-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .form-container {
+                height: auto;
+            }
+            .form-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .form-actions button {
+                width: 50%;
+            }
+            .route-display {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            #map {
+                height: calc(100vh - 360px);
+            }
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const userIcon = document.querySelector('.user-icon');
-            const dropdown = document.querySelector('.dropdown');
-            if (userIcon && dropdown) {
-                userIcon.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent event bubbling
-                    dropdown.classList.toggle('active');
-                    console.log('User icon clicked, dropdown toggled');
-                });
-                document.addEventListener('click', function(e) {
-                    if (!userIcon.contains(e.target) && !dropdown.contains(e.target)) {
-                        dropdown.classList.remove('active');
-                        console.log('Clicked outside, dropdown closed');
-                    }
-                });
-            } else {
-                console.error('User icon or dropdown not found');
-            }
-        });
-    </script>
 </head>
 <body>
     <header>
@@ -228,67 +270,80 @@
             <img src="{{ url_for('static', filename='FarFlight.png') }}" alt="FarFlight Logo">
             <h1>Far Flight</h1>
         </div>
-        <div class="nav-links">
-            <a href="{{ url_for('index') }}" class="nav-btn">Home</a>
-            <a href="{{ url_for('routes') }}" class="nav-btn">Routes</a>
-            <div class="user-menu">
-                {% if user.profile_picture %}
-                    <img src="{{ url_for('uploaded_file', filename=user.profile_picture) }}" alt="Profile Picture" class="user-icon">
-                {% else %}
-                    <div class="user-icon">{{ username[0] | upper }}</div>
-                {% endif %}
-                <span class="username">{{ username }}</span>
-                <div class="dropdown">
-                    <a href="{{ url_for('account') }}">View Account</a>
-                    <a href="{{ url_for('edit_account') }}">Edit Account</a>
-                    <a href="{{ url_for('logout') }}">Logout</a>
-                </div>
-            </div>
+        <div class="header-right">
+            <a href="{{ url_for('routes') }}">Saved Routes</a>
+            <a href="{{ url_for('account') }}">Account</a>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
         </div>
     </header>
-    <div class="container">
+    <div class="main-content">
         <div class="sidebar">
-            <h2>Flight Planner</h2>
-            <form method="POST">
-                <div class="form-group">
-                    <label for="tail_number">Tail Number</label>
-                    <select id="tail_number" name="tail_number" required>
-                        {% for tail in tail_numbers %}
-                            <option value="{{ tail }}">{{ tail }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="dest_airport">Departure Airport</label>
-                    <input type="text" id="dest_airport" name="dest_airport" placeholder="Enter IATA code" required>
-                </div>
-                <div class="form-group">
-                    <label for="waypoints">Waypoints (comma-separated IATA codes)</label>
-                    <input type="text" id="waypoints" name="waypoints" placeholder="e.g., JFK,LAX">
-                </div>
-                <div class="form-group">
-                    <label for="arrival_airport">Arrival Airport</label>
-                    <input type="text" id="arrival_airport" name="arrival_airport" placeholder="Enter IATA code" required>
-                </div>
-                <div class="form-group">
-                    <label for="time_departing">Time Departing</label>
-                    <input type="datetime-local" id="time_departing" name="time_departing">
-                </div>
-                <div class="form-actions">
-                    <button type="submit" name="action" value="save">Save & Plot Route</button>
-                    <button type="submit" name="action" value="clear" class="clear">Clear</button>
-                </div>
-            </form>
-            {% if error %}
-                <p class="error">{{ error }}</p>
-            {% endif %}
-            {% if route_display %}
-                <p class="route-display">Route: {{ route_display }}</p>
-            {% endif %}
+            <img src="{{ url_for('static', filename='FarFlight.png') }}" alt="FarFlight Logo">
+            <h2>Tail Numbers</h2>
+            <div class="tail-numbers-list">
+                {% for tail_number in tail_numbers %}
+                    <div class="tail-number" onclick="selectTailNumber(this, '{{ tail_number }}')">{{ tail_number }}</div>
+                {% endfor %}
+            </div>
         </div>
-        <div class="map-container">
-            {{ map_html | safe }}
+        <div class="content">
+            <div class="form-container">
+                <form method="POST" id="routeForm">
+                    <input type="hidden" name="tail_number" id="tail_number">
+                    <div class="inputs-row">
+                        <div class="form-group">
+                            <label for="dest_airport">Departure Airport (IATA)</label>
+                            <input type="text" id="dest_airport" name="dest_airport" placeholder="e.g., JFK" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="waypoints">Waypoints (IATA, comma-separated)</label>
+                            <input type="text" id="waypoints" name="waypoints" placeholder="e.g., ORD, DEN">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrival_airport">Arrival Airport (IATA)</label>
+                            <input type="text" id="arrival_airport" name="arrival_airport" placeholder="e.g., LAX" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time_departing">Time Departing</label>
+                            <input type="text" id="time_departing" name="time_departing" placeholder="e.g., 14:30">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" name="action" value="find">Find Route</button>
+                        <button type="submit" name="action" value="save">Save Route</button>
+                    </div>
+                    {% if error %}
+                        <p class="error">{{ error }}</p>
+                    {% endif %}
+                </form>
+            </div>
+            {% if route_display %}
+                <div class="route-display">
+                    <span>Route: {{ route_display }}</span>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="clear">
+                        <button type="submit">X</button>
+                    </form>
+                </div>
+            {% endif %}
+            <div id="map">
+                {{ map_html | safe }}
+            </div>
         </div>
     </div>
+    <script>
+        function selectTailNumber(element, tailNumber) {
+            document.querySelectorAll('.tail-number').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('tail_number').value = tailNumber;
+        }
+        document.getElementById('routeForm').addEventListener('submit', function(e) {
+            const tailNumber = document.getElementById('tail_number').value;
+            if (!tailNumber) {
+                e.preventDefault();
+                alert('Please select a tail number.');
+            }
+        });
+    </script>
 </body>
 </html>

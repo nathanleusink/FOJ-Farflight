@@ -79,7 +79,6 @@
             border: 1px solid #3b3f5c;
             object-fit: cover;
             cursor: pointer;
-            pointer-events: auto;
         }
         .username {
             font-size: 0.95em;
@@ -152,9 +151,9 @@
         }
         .form-group label {
             font-size: 0.9em;
+            margin-bottom: 5px;
             color: #a3a8c3;
             display: block;
-            margin-bottom: 5px;
         }
         .form-group input {
             width: 100%;
@@ -165,9 +164,8 @@
             background-color: #2d3047;
             color: #d0d2d6;
         }
-        .form-group input:focus {
-            border-color: #60a5fa;
-            outline: none;
+        .form-actions {
+            text-align: center;
         }
         .form-actions button {
             padding: 12px 24px;
@@ -185,12 +183,14 @@
         .error {
             color: #ff6b6b;
             font-size: 0.9em;
-            margin-bottom: 10px;
+            margin: 10px 0;
+            text-align: center;
         }
         .success {
             color: #4ade80;
             font-size: 0.9em;
-            margin-bottom: 10px;
+            margin: 10px 0;
+            text-align: center;
         }
     </style>
     <script>
@@ -201,16 +201,12 @@
                 userIcon.addEventListener('click', function(e) {
                     e.stopPropagation();
                     dropdown.classList.toggle('active');
-                    console.log('User icon clicked, dropdown toggled');
                 });
                 document.addEventListener('click', function(e) {
                     if (!userIcon.contains(e.target) && !dropdown.contains(e.target)) {
                         dropdown.classList.remove('active');
-                        console.log('Clicked outside, dropdown closed');
                     }
                 });
-            } else {
-                console.error('User icon or dropdown not found');
             }
         });
     </script>
@@ -225,12 +221,12 @@
             <a href="{{ url_for('index') }}" class="nav-btn">Home</a>
             <a href="{{ url_for('routes') }}" class="nav-btn">Routes</a>
             <div class="user-menu">
-                {% if user.profile_picture %}
+                {% if user and user.profile_picture %}
                     <img src="{{ url_for('uploaded_file', filename=user.profile_picture) }}" alt="Profile Picture" class="user-icon">
                 {% else %}
-                    <div class="user-icon">{{ username[0] | upper }}</div>
+                    <div class="user-icon">{{ user.username[0] | upper if user else '?' }}</div>
                 {% endif %}
-                <span class="username">{{ username }}</span>
+                <span class="username">{{ user.username if user else 'Guest' }}</span>
                 <div class="dropdown">
                     <a href="{{ url_for('account') }}">View Account</a>
                     <a href="{{ url_for('edit_account') }}">Edit Account</a>
@@ -241,12 +237,12 @@
     </header>
     <div class="account-container">
         <h2>Edit Account</h2>
-        {% if user.profile_picture %}
+        {% if user and user.profile_picture %}
             <img src="{{ url_for('uploaded_file', filename=user.profile_picture) }}" alt="Profile Picture" class="profile-picture">
         {% else %}
             <div class="default-picture">No Picture</div>
         {% endif %}
-        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Username:</strong> {{ user.username if user else 'Unknown' }}</p>
         {% if error %}
             <p class="error">{{ error }}</p>
         {% endif %}

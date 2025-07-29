@@ -20,23 +20,19 @@ def haversine(lat1, lon1, lat2, lon2):
 def optimize_route(start_coords, waypoints, end_coords):
     if not waypoints:
         return [start_coords, end_coords]
-    
     route = [start_coords]
     remaining = waypoints[:]
     current = start_coords
-    
     while remaining or route[-1] != end_coords:
         next_points = remaining + ([end_coords] if route[-1] != end_coords else [])
         if not next_points:
             break
-        
         nearest = min(next_points, key=lambda p: haversine(
             current['latitude'], current['longitude'], p['latitude'], p['longitude']))
         route.append(nearest)
         current = nearest
         if nearest in remaining:
             remaining.remove(nearest)
-    
     total_dist = sum(haversine(route[i]['latitude'], route[i]['longitude'],
                                route[i+1]['latitude'], route[i+1]['longitude'])
                      for i in range(len(route)-1))
@@ -49,9 +45,7 @@ def create_map(route=None):
         sum(coord['longitude'] for coord in route) / len(route)
     )
     zoom_start = 2 if not route else 4
-    
     m = folium.Map(location=[center_lat, center_lon], zoom_start=zoom_start, tiles=None)
-    
     logger.debug("Adding OpenStreetMap base layer")
     folium.TileLayer(
         tiles='openstreetmap',
@@ -60,7 +54,6 @@ def create_map(route=None):
         overlay=False,
         control=True
     ).add_to(m)
-    
     proxy_tiles = '/proxy/tiles/{z}/{x}/{y}.png'
     logger.debug(f"Adding OpenAIP tile layer with proxy URL: {proxy_tiles}")
     try:
@@ -77,7 +70,6 @@ def create_map(route=None):
         logger.info("Aeronautical chart layer added successfully")
     except Exception as e:
         logger.error(f"Failed to add aeronautical chart layer: {e}")
-    
     if route:
         folium.Marker(
             [route[0]['latitude'], route[0]['longitude']],
@@ -95,10 +87,8 @@ def create_map(route=None):
             popup="Arrival",
             icon=folium.Icon(color='red', icon='plane')
         ).add_to(m)
-        
         route_points = [(coord['latitude'], coord['longitude']) for coord in route]
         folium.PolyLine(route_points, color="blue", weight=2.5, opacity=1).add_to(m)
-    
     folium.LayerControl().add_to(m)
     return m._repr_html_()
 
